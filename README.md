@@ -1,2 +1,5 @@
 # Crypto
-tetitas
+
+crypto<-read.csv("crypto-markets.csv")
+
+for i in 1:lenght(crypto)
