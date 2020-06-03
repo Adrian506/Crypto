@@ -1,16 +1,11 @@
 crypto<-read.csv("crypto-markets.csv")
 
 summary(crypto)
-cryptoBITS<-data.frame()
-for (i in 1:nrow(crypto)){
-  if (crypto$symbol[i]=="BITS"){
-      cryptoBITS[i]<-data.frame(crypto[i,])
-  }
-}
 
+cryptoBITS<-crypto[(crypto$symbol=="BITS"),]
+cryptoPXC<-crypto[(crypto$symbol=="PXC"),]
+cryptoBTB<-crypto[(crypto$symbol=="BTB"),]
+cryptoBTM<-crypto[(crypto$symbol=="BTM"),]
+cryptoBTC<-crypto[(crypto$symbol=="BTC"),]
+cryptoLTC<-crypto[(crypto$symbol=="LTC"),]
 
-warnings() 
-
-cryptoBITS<-data.frame(which(crypto$symbol=="BITS"))
-
-length(crypto)
