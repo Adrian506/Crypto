@@ -1,8 +1,16 @@
 crypto<-read.csv("crypto-markets.csv")
 
 summary(crypto)
-cryptoBITS<-dta.frame()
+cryptoBITS<-data.frame()
 for (i in 1:nrow(crypto)){
-  if (crypto$symbol=="BITS")
-    cryptoBITS[i,]<-crypto[i,]
- }
+  if (crypto$symbol[i]=="BITS"){
+      cryptoBITS[i]<-data.frame(crypto[i,])
+  }
+}
+
+
+warnings() 
+
+cryptoBITS<-data.frame(which(crypto$symbol=="BITS"))
+
+length(crypto)
