@@ -58,11 +58,11 @@ shinyServer(function(input, output) {
 })
 
 
-crypto$close[3]
+#crypto$close[3]
 
 ??data.frame
-alex<-data.frame[1,942297]
-for (i in 2019)
-alex[2]<-(crypto$close[2-1]-crypto$close[2])/100
+#alex<-data.frame[1,942297]
+#for (i in 2019)
+#alex[2]<-(crypto$close[2-1]-crypto$close[2])/100
 
-alex <- data.frame(1:942297, letters[1:942297])
+#alex <- data.frame(1:942297, letters[1:942297])
