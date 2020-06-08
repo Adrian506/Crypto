@@ -6,7 +6,8 @@ shinyServer(function(input, output) {
   #leemos los datos
    crypto<-read.csv("crypto-markets.csv") 
   
-  #comprobamos estructura
+   
+ #comprobamos estructura
  #str(crypto)
  
  #cambiamos a formato fecha
@@ -23,7 +24,6 @@ shinyServer(function(input, output) {
  
  # Name it
  names(lista) <- choices$nombres
-
  
  #representación#
     output$Plot <- renderPlot({
@@ -47,20 +47,26 @@ shinyServer(function(input, output) {
   #monedasselec2$nor<-
   #monedasselec$por<-monedasselec$close
   
+  
+  
+  #rango limite
+  rango<-reactive({ 
+    as.numeric(input$slide) 
+  })
 
-    ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()
+  
+    ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()+coord_cartesian(ylim = rango())+theme_bw()
 
     #ggplot(data=monedasselec, aes(x=date, y=volume))+geom_histogram()
   })
     #output$moneda <- renderText(input$coin)
  
-
 })
+ 
 
 
 #crypto$close[3]
 
-??data.frame
 #alex<-data.frame[1,942297]
 #for (i in 2019)
 #alex[2]<-(crypto$close[2-1]-crypto$close[2])/100
