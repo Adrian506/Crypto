@@ -66,3 +66,4 @@ for (i in 2019)
 alex[2]<-(crypto$close[2-1]-crypto$close[2])/100
 
 alex <- data.frame(1:942297, letters[1:942297])
+
