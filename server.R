@@ -1,32 +1,42 @@
 library(shiny)
 library(ggplot2)
 library(dygraphs)
-library(xts)          # To make the convertion data-frame / xts format
+library(xts)         
 library(tidyverse)
 library(lubridate)
 library(viridis)
 library(hrbrthemes)
 library(plotly)
+library(quantmod)
+library(shinycustomloader)
+
+
 shinyServer(function(input, output) {
   
-  #leemos los datos
-   crypto<-read.csv("crypto-markets.csv") 
   
+   #leemos los datos
+  crypto<-read.csv("crypto-markets.csv") 
+  #save(crypto,file="Crypto.rda")
+  #crypto<-load(Crypto.rda)
   #comprobamos estructura
- #str(crypto)
- 
- #cambiamos a formato fecha
- crypto$date<- as.Date(crypto$date, format="%Y-%m-%d")
   
- #tipos de monedas distintas
+output$head<-renderTable({
+  crypto[1:5,1:13]
+ })
+
+??str
+    #cambiamos a formato fecha
+ crypto$date<- as.Date(crypto$date, format="%Y-%m-%d")
+ 
+  #tipos de monedas distintas
  choices <- data.frame(
    nombres <- levels(crypto$slug),
    num <- 1:length(nombres)
  )
  
-  # Lista de monedas para Selectinput
+     # Lista de monedas para Selectinput
  lista <- as.list(choices$num)
- 
+  
  # Name it
  names(lista) <- choices$nombres
 
@@ -39,6 +49,11 @@ shinyServer(function(input, output) {
     as.numeric(input$coin) 
   })
 
+    rango<-reactive({ 
+      as.numeric(input$slider) 
+    })
+    
+    
   #monedas elegidas por el usuario
   colm<- choices[col(),1]
   colm<-as.character(colm)
@@ -67,7 +82,7 @@ shinyServer(function(input, output) {
           #dyRoller(rollPeriod = 1)
 
 
-    ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()
+    ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
     
     
 
