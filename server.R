@@ -11,7 +11,6 @@ library(quantmod)
     
   #############Preprocesamiento y carga de datos#############
 
-  #leemos los datos
   #crypto<-read.csv("crypto-markets.csv")
   #comprobamos estructura
   #str(crypto)
@@ -28,10 +27,8 @@ library(quantmod)
  )
  
   # Lista de monedas para Selectinput
-   
  lista<-as.list(choices$num)
-  
-    # Name it
+    #Nombres
  names(lista) <- choices$nombres 
 
  
@@ -47,6 +44,9 @@ shinyServer(function(input, output) {
 output$head<-renderTable({
   crypto[1:5,1:13]
  })
+
+
+#####Variables reactivas#####
 
    #función reactiva del input monedas
     col<-reactive({ 
@@ -69,9 +69,13 @@ output$head<-renderTable({
           crypto[z,]      
       })  
     
+#####renderTables#####    
+    
     output$monedas<-renderTable({
           monedasselec()
      })
+    
+#####renderPlot#####
     
     #representación#
     output$Plot <- renderPlot({
