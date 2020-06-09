@@ -25,13 +25,16 @@ shinyUI(
                            
                            ),
                   tabPanel("Gráfico", plotOutput("Plot"),
-                           sliderInput("slider", "Elija el rango de precios", min=0, max=19000, value=c(0,19000))
+                           sliderInput("slider", "Elija el rango de precios", min=0, max=19000, value=c(0,19000)),
+                           tableOutput("monedas")
                            ),
                   tabPanel("Gráfico", dygraphOutput("dyplot")),
-                  tabPanel("Gráfico", plotOutput("Plot1")),
                   tabPanel("Gráfico", plotlyOutput("Plot2")),
-                  tabPanel("Investigación"),
-                  tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."), h5("En caso de ganancias se aceptan donaciones"))
+                  tabPanel("Investigación", 
+                           h4("Analisis de datos"),
+                           h5("Primero de todo se quiere remarcar la capitalización global de las critomonedas"),
+                           plotOutput("Plot1")),
+                  tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."))
                   )
             )
   ))

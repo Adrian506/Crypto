@@ -27,7 +27,6 @@ library(quantmod)
    num <- 1:length(nombres)
  )
  
- 
   # Lista de monedas para Selectinput
    
  lista<-as.list(choices$num)
@@ -36,22 +35,16 @@ library(quantmod)
  names(lista) <- choices$nombres 
    
  
- 
-
- 
- 
  ##################Fin preprocesamiento############
  
       
 shinyServer(function(input, output) {
   
   
-  
  output$lista<-renderUI({
  selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = 209, multiple = TRUE)
  
  })  
-  
   
 output$head<-renderTable({
   crypto[1:5,1:13]
