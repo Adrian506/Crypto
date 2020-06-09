@@ -33,11 +33,9 @@ library(quantmod)
   
     # Name it
  names(lista) <- choices$nombres 
-   
+
  
- ##################Fin preprocesamiento############
- 
-      
+ ##Input, outputs##
 shinyServer(function(input, output) {
   
   
@@ -58,87 +56,47 @@ output$head<-renderTable({
     #Cambio de 
     rango<-reactive({ 
       as.numeric(input$slider) 
-    })
-    
-    #representación#
-    output$Plot <- renderPlot({
-
-     #monedas elegidas por el usuario
-  colm<- choices[col(),1]
-  colm<-as.character(colm)
-
-  #lista con True en las filas con monedas elegidas por el usuario
-  z<- crypto$slug %in% colm 
-  
-  #dataset con las monedas seleecionadas por el usuario
-  monedasselec<-crypto[z,]
-  
-    ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
-
   })
     
     
+    monedasselec<-reactive({
+         #monedas elegidas por el usuario
+          colm<- choices[col(),1]
+          colm<-as.character(colm)
+          #lista con True en las filas con monedas elegidas por el usuario
+          z<- crypto$slug %in% colm 
+          #dataset con las monedas seleecionadas por el usuario
+          crypto[z,]      
+      })  
     
-    #output$moneda <- renderText(input$coin)
+    output$monedas<-renderTable({
+          monedasselec()
+     })
+    
+    #representación#
+    output$Plot <- renderPlot({
+    ggplot(data= monedasselec(), aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
+    })
+    
+    
+  
     output$dyplot <- renderDygraph({
-      
-      #función reactiva del input
-      col<-reactive({ 
-        as.numeric(input$coin) 
-      })
-      
-      #monedas elegidas por el usuario
-      colm<- choices[col(),1]
-      colm<-as.character(colm)
-      
-      #lista con True en las filas con monedas elegidas por el usuario
-      z<- crypto$slug %in% colm 
-      
-      #dataset con las monedas seleecionadas por el usuario
-      monedasselec<-crypto[z,]
-      
-      #monedasselec2<-monedasselec
-      #monedasselec2$nor<-
-      #monedasselec$por<-monedasselec$close
-      # Since my time is currently a factor, I have to convert it to a date-time format!
-      
-      
-      # Then you can create the xts necessary to use dygraph
-      don <- xts(x = monedasselec$close, order.by = monedasselec$date)
-      
-      # Finally the plot
+      # Xts para dygraph
+      don <- xts(x = monedasselec()$close, order.by = monedasselec()$date)
+      # Plot
       dygraph(don) %>%
       dyOptions(labelsUTC = TRUE, fillGraph=TRUE, fillAlpha=0.1, drawGrid = FALSE, colors="#D8AE5A") %>%
       dyRangeSelector() %>%
       dyCrosshair(direction = "vertical") %>%
       dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 0.2, hideOnMouseOut = FALSE)  %>%
       dyRoller(rollPeriod = 1)
-      
-      
     })
+    
+    
     output$Plot1 <- renderPlot({
-      
-      #función reactiva del input
-      col<-reactive({ 
-        as.numeric(input$coin) 
-      })
-      
-      #monedas elegidas por el usuario
-      colm<- choices[col(),1]
-      colm<-as.character(colm)
-      
-      #lista con True en las filas con monedas elegidas por el usuario
-      z<- crypto$slug %in% colm 
-      
-      #dataset con las monedas seleecionadas por el usuario
-      monedasselec<-crypto[z,]
-      
-      
-     
-      
+
       # Plot
-       
-      ggplot(data = monedasselec, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
+      ggplot(data = monedasselec(), aes(x=date, y=market, fill=slug,  sepparate=slug)) +
       geom_area( ) +
       scale_fill_viridis(discrete = TRUE) +
       theme(legend.position="none") +
@@ -148,10 +106,10 @@ output$head<-renderTable({
       
       # Turn it interactive
       #p <- ggplotly(p, tooltip="text")
-     #p
+       #p
       
       
-      
+     
     })
     output$Plot2 <- renderPlotly({
       
@@ -176,8 +134,7 @@ output$head<-renderTable({
       # Plot
       # No dendrogram nor reordering for neither column or row
       
-      library(plotly)
-      library(quantmod)
+
       
       # basic example of ohlc charts
       #df <- data.frame(Date=index(AAPL),coredata(AAPL))
