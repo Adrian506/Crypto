@@ -9,9 +9,8 @@ shinyUI(
   
   # Sidebar selección de cryptos 
   sidebarLayout(
-        sidebarPanel(
-              uiOutput("lista")
-                    ),
+        sidebarPanel(),
+        
         # Tabs
   mainPanel(
   tabsetPanel(type="tab",
@@ -20,13 +19,15 @@ shinyUI(
                            tableOutput("head"),
                            h5("Con 942297 observaciones y 13 variables"),
                            h5("Actualmente el dataset datos de 2071 cryptomonedas entre el 28/4/2013 y el 29/11/2018")
-                           
                            ),
-                  tabPanel("Gráfico", plotOutput("Plot"),
+                  tabPanel("Gráfico", uiOutput("lista"),
+                           plotOutput("Plot"),
                            sliderInput("slider", "Elija el rango de precios", min=0, max=19000, value=c(0,19000)),
                            tableOutput("monedas")
                            ),
-                  tabPanel("Gráfico", dygraphOutput("dyplot")),
+                  tabPanel("Gráfico", 
+                           uiOutput("lista2"),
+                           dygraphOutput("dyplot")),
                   tabPanel("Gráfico", plotlyOutput("Plot2")),
                   tabPanel("Investigación", 
                            h4("Analisis de datos"),

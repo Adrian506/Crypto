@@ -9,7 +9,6 @@ library(hrbrthemes)
 library(plotly)
 library(quantmod)
     
-
   #############Preprocesamiento y carga de datos#############
 
   #crypto<-read.csv("crypto-markets.csv")
@@ -36,12 +35,16 @@ library(quantmod)
  ##Input, outputs##
 shinyServer(function(input, output) {
   
-  
- output$lista<-renderUI({
- selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = 209, multiple = TRUE)
- 
- })  
-  
+#####Ui  dinamica#####  
+
+output$lista<-renderUI({
+ selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = c(209,720), multiple = TRUE)
+  })  
+
+output$lista2<-renderUI({
+  selectInput("coin2", "Elige las Cryptomonedas", choice=lista, selected =209, multiple = FALSE)
+})
+
 output$head<-renderTable({
   crypto[1:5,1:13]
  })
@@ -54,7 +57,12 @@ output$head<-renderTable({
     as.numeric(input$coin) 
   })
 
-    #Cambio de 
+#función reactiva del input monedas
+col2<-reactive({ 
+  as.numeric(input$coin2) 
+})
+
+    #Cambio de eje X
     rango<-reactive({ 
       as.numeric(input$slider) 
   })
@@ -70,6 +78,17 @@ output$head<-renderTable({
           crypto[z,]      
       })  
     
+    
+    monedasselec2<-reactive({
+      #monedas elegidas por el usuario
+      colm2<- choices[col2(),1]
+      colm2<-as.character(colm2)
+      #lista con True en las filas con monedas elegidas por el usuario
+      z2<- crypto$slug %in% colm2 
+      #dataset con las monedas seleecionadas por el usuario
+      crypto[z2,]      
+    })  
+    
 #####renderTables#####    
     
     output$monedas<-renderTable({
@@ -82,12 +101,13 @@ output$head<-renderTable({
     output$Plot <- renderPlot({
     ggplot(data= monedasselec(), aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
     })
+
     
-    
-    #representación gráfica dygraph interactivo# 
+
+#representación gráfica dygraph interactivo# 
     output$dyplot <- renderDygraph({
       # Xts para dygraph
-      don <- xts(x = monedasselec()$close, order.by = monedasselec()$date)
+      don <- xts(x = monedasselec2()$close, order.by = monedasselec2()$date)
       # Plot
       dygraph(don) %>%
       dyOptions(labelsUTC = TRUE, fillGraph=TRUE, fillAlpha=0.1, drawGrid = FALSE, colors="#D8AE5A") %>%
