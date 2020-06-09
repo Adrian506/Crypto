@@ -8,53 +8,69 @@ library(viridis)
 library(hrbrthemes)
 library(plotly)
 library(quantmod)
-library(shinycustomloader)
+    
+  #############Preprocesamiento y carga de datos#############
 
-
-shinyServer(function(input, output) {
-  
-  
-   #leemos los datos
-  crypto<-read.csv("crypto-markets.csv") 
-  #save(crypto,file="Crypto.rda")
-  #crypto<-load(Crypto.rda)
+  #leemos los datos
+  #crypto<-read.csv("crypto-markets.csv")
   #comprobamos estructura
+  #str(crypto)
+  #cambiamos a formato fecha 
+  #crypto$date<- as.Date(crypto$date, format="%Y-%m-%d")
   
-output$head<-renderTable({
-  crypto[1:5,1:13]
- })
-
-??str
-    #cambiamos a formato fecha
- crypto$date<- as.Date(crypto$date, format="%Y-%m-%d")
- 
+  #save(crypto,file="Crypto.Rdata")
+  load(file="Crypto.Rdata")    
+    
   #tipos de monedas distintas
  choices <- data.frame(
    nombres <- levels(crypto$slug),
    num <- 1:length(nombres)
  )
  
-     # Lista de monedas para Selectinput
- lista <- as.list(choices$num)
+ 
+  # Lista de monedas para Selectinput
+   
+ lista<-as.list(choices$num)
   
- # Name it
- names(lista) <- choices$nombres
+    # Name it
+ names(lista) <- choices$nombres 
+   
+ 
+ 
 
  
- #representación#
-    output$Plot <- renderPlot({
+ 
+ ##################Fin preprocesamiento############
+ 
       
-  #función reactiva del input
+shinyServer(function(input, output) {
+  
+  
+  
+ output$lista<-renderUI({
+ selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = 209, multiple = TRUE)
+ 
+ })  
+  
+  
+output$head<-renderTable({
+  crypto[1:5,1:13]
+ })
+
+   #función reactiva del input monedas
     col<-reactive({ 
     as.numeric(input$coin) 
   })
 
+    #Cambio de 
     rango<-reactive({ 
       as.numeric(input$slider) 
     })
     
-    
-  #monedas elegidas por el usuario
+    #representación#
+    output$Plot <- renderPlot({
+
+     #monedas elegidas por el usuario
   colm<- choices[col(),1]
   colm<-as.character(colm)
 
@@ -64,30 +80,12 @@ output$head<-renderTable({
   #dataset con las monedas seleecionadas por el usuario
   monedasselec<-crypto[z,]
   
-  #monedasselec2<-monedasselec
-  #monedasselec2$nor<-
-  #monedasselec$por<-monedasselec$close
-  # Since my time is currently a factor, I have to convert it to a date-time format!
-  
-  
-  # Then you can create the xts necessary to use dygraph
-      #don <- xts(x = monedasselec$close, order.by = monedasselec$date)
-  
-  # Finally the plot
-       #dygraph(don) %>%
-        #dyOptions(labelsUTC = TRUE, fillGraph=TRUE, fillAlpha=0.1, drawGrid = FALSE, colors="#D8AE5A") %>%
-         #dyRangeSelector() %>%
-          #dyCrosshair(direction = "vertical") %>%
-          #dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 0.2, hideOnMouseOut = FALSE)  %>%
-          #dyRoller(rollPeriod = 1)
-
-
     ggplot(data= monedasselec, aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
-    
-    
 
-    #ggplot(data=monedasselec, aes(x=date, y=volume))+geom_histogram()
   })
+    
+    
+    
     #output$moneda <- renderText(input$coin)
     output$dyplot <- renderDygraph({
       

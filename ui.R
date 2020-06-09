@@ -10,7 +10,7 @@ shinyUI(
   # Sidebar selección de cryptos 
   sidebarLayout(
         sidebarPanel(
-              selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = 209, multiple = TRUE)
+              uiOutput("lista")
               
                   ),
     
