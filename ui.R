@@ -11,10 +11,8 @@ shinyUI(
   sidebarLayout(
         sidebarPanel(
               uiOutput("lista")
-              
-                  ),
-    
-    # Tabs
+                    ),
+        # Tabs
   mainPanel(
   tabsetPanel(type="tab",
                   tabPanel("Summary",
@@ -32,8 +30,11 @@ shinyUI(
                   tabPanel("Gráfico", plotlyOutput("Plot2")),
                   tabPanel("Investigación", 
                            h4("Analisis de datos"),
-                           h5("Primero de todo se quiere remarcar la capitalización global de las critomonedas"),
-                           plotOutput("Plot1")),
+                           h5("En este primer grafico se quiere remarcar la capitalización global de las 10 primeras monedas con mayor marketshare"),
+                           plotOutput("marketshare1"),
+                           h5("Pudiendose comprar el marketshare con el total de las cryptomonedas analizadas, 2071 en total."),
+                           plotOutput("marketshare2")
+                                                      ),
                   tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."))
                   )
             )

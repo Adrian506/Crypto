@@ -9,6 +9,7 @@ library(hrbrthemes)
 library(plotly)
 library(quantmod)
     
+
   #############Preprocesamiento y carga de datos#############
 
   #crypto<-read.csv("crypto-markets.csv")
@@ -77,13 +78,13 @@ output$head<-renderTable({
     
 #####renderPlot#####
     
-    #representación#
+    #representación gráfica comparativa#
     output$Plot <- renderPlot({
     ggplot(data= monedasselec(), aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
     })
     
     
-  
+    #representación gráfica dygraph interactivo# 
     output$dyplot <- renderDygraph({
       # Xts para dygraph
       don <- xts(x = monedasselec()$close, order.by = monedasselec()$date)
@@ -96,25 +97,34 @@ output$head<-renderTable({
       dyRoller(rollPeriod = 1)
     })
     
-    
-    output$Plot1 <- renderPlot({
-
-      # Plot
-      ggplot(data = monedasselec(), aes(x=date, y=market, fill=slug,  sepparate=slug)) +
+    #representación marketshare investigación#    
+    output$marketshare1 <- renderPlot({
+      
+      crypto10<-crypto[1:11644,]     
+      ggplot(data = crypto10, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
       geom_area( ) +
       scale_fill_viridis(discrete = TRUE) +
       theme(legend.position="none") +
       ggtitle("Market Volume") +
       theme_ipsum() +
       theme(legend.position="none")
+   })
+    
+    
+    #representación marketshare investigación2#    
+    output$marketshare2 <- renderPlot({
       
-      # Turn it interactive
-      #p <- ggplotly(p, tooltip="text")
-       #p
-      
-      
-     
+      cryptoresto<-crypto[11644:942297,]     
+      ggplot(data = crypto, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
+        geom_area( ) +
+        scale_fill_viridis(discrete = TRUE) +
+        theme(legend.position="none") +
+        ggtitle("Market Volume") +
+        theme_ipsum() +
+        theme(legend.position="none")
     })
+    
+    
     output$Plot2 <- renderPlotly({
       
       #función reactiva del input
@@ -134,11 +144,9 @@ output$head<-renderTable({
       
       crypto2<-crypto[1:11644,]
       
-      
+      monedasselec<-crypto[1:100,]
       # Plot
       # No dendrogram nor reordering for neither column or row
-      
-
       
       # basic example of ohlc charts
       #df <- data.frame(Date=index(AAPL),coredata(AAPL))
@@ -246,7 +254,4 @@ output$head<-renderTable({
     # Add a legend
     #legend(x=0.7, y=1, legend = rownames(data[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
     #?radarchart
-    
-    
-
     
