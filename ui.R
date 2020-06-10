@@ -9,7 +9,7 @@ shinyUI(
   
   # Sidebar selección de cryptos 
   sidebarLayout(
-          tags$img(src="iqs2.jpg", height=130,width=250),
+          tags$img(src="iqs2.jpg", height=160,width=250),
         
         # Tabs
   mainPanel(
