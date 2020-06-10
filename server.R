@@ -1,9 +1,8 @@
 library(shiny)
 library(ggplot2)
 library(dygraphs)
-library(xts)         
-
-
+library(xts)       
+library(viridis)
 library(hrbrthemes)
 library(plotly)
 library(quantmod)
