@@ -40,9 +40,9 @@ library(forecast)
  
  #crypto3<-reshape(crypto2, idvar='date', timevar='slug', direction='wide')
  
- #crypto3$suma<-rowSums(crypto3[,2:2072], na.rm=TRUE)
+ #crypto3$suma2<-rowSums(crypto3[,5:2072], na.rm=TRUE)
  
- #save(crypto3,file="CryptoMarket.Rdata")
+ #save(crypto5,file="CryptoMarket.Rdata")
  load(file="CryptoMarket.Rdata")    
  
  #crypto3$propbtc<-(crypto3[,2]/crypto3[,2073])*100
@@ -54,9 +54,10 @@ library(forecast)
  #crypto3$propeth<-(crypto3[,4]/crypto3[,2073])*100
  #ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del Etherium respecto al global")
  
- 
+ #crypto3$propresto<-(crypto3[,2077]/crypto3[,2073])*100
+ #ggplot(data= crypto5, aes(x=date, y=propresto))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del BTC respecto al global")
 
- 
+
  
  
 
@@ -177,24 +178,26 @@ col2<-reactive({
     #representación marketshare bitcoin proporcion#
     output$marketbtc <- renderPlot({
     
-    ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+ggtitle("Capitalización del BTC respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=propbtc))+geom_line()+theme_bw()+ggtitle("Capitalización del BTC respecto al global")
 
     })
     
     #representación marketshare rip proporcion#
     output$marketrip <- renderPlot({
 
-    ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()+ggtitle("Capitalización del Rippel respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=proprip))+geom_line()+theme_bw()+ggtitle("Capitalización del Rippel respecto al global")
     }) 
     
     
     #representación marketshare etherium proporcion#
     output$marketeth <- renderPlot({
-    ggplot(data= crypto3, aes(x=date, y=propeth))+geom_line()+theme_bw()+ggtitle("Capitalización del Etherium respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=propeth))+geom_line()+theme_bw()+ggtitle("Capitalización del Etherium respecto al global")
     }) 
-    
-    
-    
+   
+    #representación marketshare resto de monedas proporcion# 
+    output$marketresto <- renderPlot({
+    ggplot(data= crypto5, aes(x=date, y=propresto))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Porcentage de capitalizacion de todas las monedas menos las 3 primeras")
+    })
     
     
     

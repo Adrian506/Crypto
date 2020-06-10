@@ -40,7 +40,9 @@ shinyUI(
                            h5("El porcentage de marketshare de Ripel respecto al conjunto de las cryptomonedas"),
                            plotOutput("marketrip"),
                            h5("El porcentage de marketshare de Etherium respecto al conjunto de las cryptomonedas"),
-                           plotOutput("marketeth")
+                           plotOutput("marketeth"),
+                           h5("El porcentage de marketshare de todas las monedas menos las tres primeras"),
+                           plotOutput("marketresto")
                                                       ),
                   tabPanel("Predictivo", h5("Predicción precio Bitcoin"), plotlyOutput("Plot3")),
                   tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."))
