@@ -19,7 +19,7 @@ library(quantmod)
   
   #save(crypto,file="Crypto.Rdata")
   load(file="Crypto.Rdata")    
-    
+    str(crypto)
   #tipos de monedas distintas
  choices <- data.frame(
    nombres <- levels(crypto$slug),

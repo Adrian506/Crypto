@@ -9,7 +9,7 @@ shinyUI(
   
   # Sidebar selección de cryptos 
   sidebarLayout(
-        sidebarPanel(),
+          tags$img(src="iqs2.jpg", height=130,width=250),
         
         # Tabs
   mainPanel(
@@ -20,15 +20,15 @@ shinyUI(
                            h5("Con 942297 observaciones y 13 variables"),
                            h5("Actualmente el dataset datos de 2071 cryptomonedas entre el 28/4/2013 y el 29/11/2018")
                            ),
-                  tabPanel("Gráfico", uiOutput("lista"),
+                  tabPanel("Comparador", uiOutput("lista"),
                            plotOutput("Plot"),
                            sliderInput("slider", "Elija el rango de precios", min=0, max=19000, value=c(0,19000)),
                            tableOutput("monedas")
                            ),
-                  tabPanel("Gráfico", 
+                  tabPanel("Screener", 
                            uiOutput("lista2"),
                            dygraphOutput("dyplot")),
-                  tabPanel("Gráfico", plotlyOutput("Plot2")),
+                  tabPanel("Grafico de Velas", plotlyOutput("Plot2")),
                   tabPanel("Investigación", 
                            h4("Analisis de datos"),
                            h5("En este primer grafico se quiere remarcar la capitalización global de las 10 primeras monedas con mayor marketshare"),
