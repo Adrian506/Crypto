@@ -1,7 +1,8 @@
 library(shiny)
 library(ggplot2)
 library(dygraphs)
-library(xts)       
+library(xts)
+library(tidyverse)
 library(viridis)
 library(hrbrthemes)
 library(plotly)
@@ -45,13 +46,13 @@ library(forecast)
  load(file="CryptoMarket.Rdata")    
  
  #crypto3$propbtc<-(crypto3[,2]/crypto3[,2073])*100
- ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+ #ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del BTC respecto al global")
  
  #crypto3$proprip<-(crypto3[,3]/crypto3[,2073])*100
- ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()
+ #ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del Rippel respecto al global")
  
  #crypto3$propeth<-(crypto3[,4]/crypto3[,2073])*100
- ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+ #ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del Etherium respecto al global")
  
  
 
@@ -127,7 +128,7 @@ col2<-reactive({
     
     #representación gráfica comparativa#
     output$Plot <- renderPlot({
-    ggplot(data= monedasselec(), aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())
+    ggplot(data= monedasselec(), aes(x=date, y=close, col=slug))+geom_line()+theme_bw()+coord_cartesian(ylim = rango())+xlab("Año") +ylab("Precio($)")
     })
 
     
@@ -153,9 +154,9 @@ col2<-reactive({
       geom_area( ) +
       scale_fill_viridis(discrete = TRUE) +
       theme(legend.position="none") +
-      ggtitle("Market Volume") +
+      ggtitle("Capitalización de todas las Criptomonedas") +
       theme_ipsum() +
-      theme(legend.position="none")
+      theme(legend.position="none")+xlab("Año") +ylab("Marketshare($)")
    })
     
     
@@ -167,29 +168,29 @@ col2<-reactive({
         geom_area( ) +
         scale_fill_viridis(discrete = TRUE) +
         theme(legend.position="none") +
-        ggtitle("Market Volume") +
+        ggtitle("Capitalización de las cripto sin las 10 primeras") +
         theme_ipsum() +
-        theme(legend.position="none")
+        theme(legend.position="none")+xlab("Año") +ylab("Marketshare($)")
     })
     
     
     #representación marketshare bitcoin proporcion#
     output$marketbtc <- renderPlot({
     
-    ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+    ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+ggtitle("Capitalización del BTC respecto al global")
 
     })
     
     #representación marketshare rip proporcion#
     output$marketrip <- renderPlot({
 
-    ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()
+    ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()+ggtitle("Capitalización del Rippel respecto al global")
     }) 
     
     
     #representación marketshare etherium proporcion#
     output$marketeth <- renderPlot({
-    ggplot(data= crypto3, aes(x=date, y=propeth))+geom_line()+theme_bw()
+    ggplot(data= crypto3, aes(x=date, y=propeth))+geom_line()+theme_bw()+ggtitle("Capitalización del Etherium respecto al global")
     }) 
     
     
