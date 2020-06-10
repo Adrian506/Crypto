@@ -36,6 +36,7 @@ shinyUI(
                            h5("Pudiendose comprar el marketshare con el total de las cryptomonedas analizadas, 2071 en total."),
                            plotOutput("marketshare2")
                                                       ),
+                  tabPanel("Predictivo", h5("Predicción precio Bitcoin"), plotOutput("Plot3")),
                   tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."))
                   )
             )

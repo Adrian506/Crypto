@@ -8,6 +8,7 @@ library(viridis)
 library(hrbrthemes)
 library(plotly)
 library(quantmod)
+librery(forcast)
     
   #############Preprocesamiento y carga de datos#############
 
@@ -144,6 +145,20 @@ col2<-reactive({
         theme(legend.position="none")
     })
     
+    ####Analisis predictivo#####
+    cryptoBTC<-crypto[(crypto$slug=="bitcoin"),]
+    
+    output$Plot3 <- renderPlot({
+      modelfit <- auto.arima(cryptoBTC()$close, lambda = "auto")
+      price_forecast <- forecast(modelfit, h=30)
+      plot(price_forecast)
+      
+    })
+    
+    
+    
+    
+    
     
     output$Plot2 <- renderPlotly({
       
@@ -216,6 +231,12 @@ col2<-reactive({
       
       fig
     })
+    
+    
+    
+
+    
+    
 
 })
 
