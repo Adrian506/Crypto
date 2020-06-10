@@ -178,20 +178,20 @@ col2<-reactive({
     #representación marketshare bitcoin proporcion#
     output$marketbtc <- renderPlot({
     
-    ggplot(data= crypto5, aes(x=date, y=propbtc))+geom_line()+theme_bw()+ggtitle("Capitalización del BTC respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=propbtc))+geom_line()+theme_bw()+ggtitle("Capitalización del BTC respecto al global") + xlab("Año") + ylab("Marketshare(%)")
 
     })
     
     #representación marketshare rip proporcion#
     output$marketrip <- renderPlot({
 
-    ggplot(data= crypto5, aes(x=date, y=proprip))+geom_line()+theme_bw()+ggtitle("Capitalización del Rippel respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=proprip))+geom_line()+theme_bw()+ggtitle("Capitalización del Rippel respecto al global")+xlab("Año") +ylab("Marketshare(%)")
     }) 
     
     
     #representación marketshare etherium proporcion#
     output$marketeth <- renderPlot({
-    ggplot(data= crypto5, aes(x=date, y=propeth))+geom_line()+theme_bw()+ggtitle("Capitalización del Etherium respecto al global")
+    ggplot(data= crypto5, aes(x=date, y=propeth))+geom_line()+theme_bw()+ggtitle("Capitalización del Etherium respecto al global")+ xlab("Año") +ylab("Marketshare(%)")
     }) 
    
     #representación marketshare resto de monedas proporcion# 
