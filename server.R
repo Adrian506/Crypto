@@ -8,7 +8,7 @@ library(viridis)
 library(hrbrthemes)
 library(plotly)
 library(quantmod)
-librery(forcast)
+library(forecast)
     
   #############Preprocesamiento y carga de datos#############
 
@@ -31,6 +31,35 @@ librery(forcast)
  lista<-as.list(choices$num)
     #Nombres
  names(lista) <- choices$nombres 
+ 
+ 
+ #crypto2<-crypto[]
+ #crypto2<-crypto2[,-2:-3]
+ #crypto2<-crypto2[,-3:-8]
+ #crypto2<-crypto2[,-4:-5]
+ 
+ 
+ #crypto3<-reshape(crypto2, idvar='date', timevar='slug', direction='wide')
+ 
+ #crypto3$suma<-rowSums(crypto3[,2:2072], na.rm=TRUE)
+ 
+ #save(crypto3,file="CryptoMarket.Rdata")
+ load(file="CryptoMarket.Rdata")    
+ 
+ #crypto3$propbtc<-(crypto3[,2]/crypto3[,2073])*100
+ ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+ 
+ #crypto3$proprip<-(crypto3[,3]/crypto3[,2073])*100
+ ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()
+ 
+ #crypto3$propeth<-(crypto3[,4]/crypto3[,2073])*100
+ ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+ 
+ 
+
+ 
+ 
+ 
 
  
  ##Input, outputs##
@@ -145,20 +174,41 @@ col2<-reactive({
         theme(legend.position="none")
     })
     
+    
+    #representación marketshare bitcoin proporcion#
+    output$marketbtc <- renderPlot({
+    
+    ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()
+
+    })
+    
+    #representación marketshare rip proporcion#
+    output$marketrip <- renderPlot({
+
+    ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()
+    }) 
+    
+    
+    #representación marketshare etherium proporcion#
+    output$marketeth <- renderPlot({
+    ggplot(data= crypto3, aes(x=date, y=propeth))+geom_line()+theme_bw()
+    }) 
+    
+    
+    
+    
+    
+    
+    
+    
     ####Analisis predictivo#####
     cryptoBTC<-crypto[(crypto$slug=="bitcoin"),]
     
     output$Plot3 <- renderPlot({
-      modelfit <- auto.arima(cryptoBTC()$close, lambda = "auto")
+          modelfit <- auto.arima(cryptoBTC$close, lambda = "auto")
       price_forecast <- forecast(modelfit, h=30)
       plot(price_forecast)
-      
-    })
-    
-    
-    
-    
-    
+       })
     
     output$Plot2 <- renderPlotly({
       
