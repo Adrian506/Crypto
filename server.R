@@ -1,26 +1,67 @@
-library(shiny)
-library(ggplot2)
-library(dygraphs)
-library(xts)
-library(tidyverse)
-library(viridis)
-library(hrbrthemes)
-library(plotly)
-library(quantmod)
-library(forecast)
-    
-  #############Preprocesamiento y carga de datos#############
+#### INSTALACIÓN DE PAQUETES ####
 
+if(!require("tidyverse")) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if(!require("shiny")) {
+  install.packages("shiny")
+  library("shiny")
+}
+if(!require("ggplot2")) {
+  install.packages("ggplot2")
+  library("ggplot2")
+}
+if(!require("tidyverse")) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if(!require("dygraphs")) {
+  install.packages("dygraphs")
+  library("dygraphs")
+}
+if(!require("xts")) {
+  install.packages("xts")
+  library("xts")
+}
+if(!require("viridis")) {
+  install.packages("viridis")
+  library("viridis")
+}
+if(!require("hrbrthemes")) {
+  install.packages("hrbrthemes")
+  library("hrbrthemes")
+}
+if(!require("plotly")) {
+  install.packages("plotly")
+  library("plotly")
+}
+if(!require("quantmod")) {
+  install.packages("quantmod")
+  library("quantmod")
+}
+if(!require("forecast")) {
+  install.packages("forecast")
+  library("forecast")
+}
+
+#### Preprocesamiento y carga de datos ####
+  #leemos el .csv
   #crypto<-read.csv("crypto-markets.csv")
+
   #comprobamos estructura
   #str(crypto)
+
   #cambiamos a formato fecha 
   #crypto$date<- as.Date(crypto$date, format="%Y-%m-%d")
-  
+
+  #se guarda en .Rdata para aumentar la velocidad
   #save(crypto,file="Crypto.Rdata")
+
+  #Cargamos el nuevo archivo
   load(file="Crypto.Rdata")    
-    str(crypto)
-  #tipos de monedas distintas
+
+  #tipos de monedas distintas con sus nombres para el selectInput
  choices <- data.frame(
    nombres <- levels(crypto$slug),
    num <- 1:length(nombres)
@@ -31,73 +72,78 @@ library(forecast)
     #Nombres
  names(lista) <- choices$nombres 
  
- 
+ #Se ha creado un dataframe quitando ciertas variables
  #crypto2<-crypto[]
  #crypto2<-crypto2[,-2:-3]
  #crypto2<-crypto2[,-3:-8]
  #crypto2<-crypto2[,-4:-5]
  
- 
+ #Se  ha realizado un split-merge(by date) con la funcion reshape() ya que el dataframe
+ #no estaba organizado de la manera ideal para representarlo.
+ #Se ha obtenido un dataframe donde las variables con la misma fecha estarán en la misma fila
  #crypto3<-reshape(crypto2, idvar='date', timevar='slug', direction='wide')
  
+ #Se suma las columnas para obtener el marketshare global de todas las criptos
  #crypto3$suma2<-rowSums(crypto3[,5:2072], na.rm=TRUE)
  
- #save(crypto5,file="CryptoMarket.Rdata")
- load(file="CryptoMarket.Rdata")    
- 
+ #Columna nueva con el porcentaje de marketshare del BTC
  #crypto3$propbtc<-(crypto3[,2]/crypto3[,2073])*100
- #ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del BTC respecto al global")
  
+ #Columna nueva con el porcentaje de marketshare del Ripple
  #crypto3$proprip<-(crypto3[,3]/crypto3[,2073])*100
- #ggplot(data= crypto3, aes(x=date, y=proprip))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del Rippel respecto al global")
  
+ #Columna nueva con el porcentaje de marketshare del Ethereum
  #crypto3$propeth<-(crypto3[,4]/crypto3[,2073])*100
- #ggplot(data= crypto3, aes(x=date, y=propbtc))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del Etherium respecto al global")
- 
+
+ #Columna nueva con el porcentaje de marketshare del resto de criptomonedas
  #crypto3$propresto<-(crypto3[,2077]/crypto3[,2073])*100
- #ggplot(data= crypto5, aes(x=date, y=propresto))+geom_line()+theme_bw()+xlab("Año") +ylab("Marketshare(%)")+ggtitle("Capitalización del BTC respecto al global")
 
-
+ #Guardamos .Rdata el dataframe nuevo
+ #save(crypto3,file="CryptoMarket.Rdata")
+ load(file="CryptoMarket.Rdata") 
  
  
 
  
- ##Input, outputs##
+#### Input, outputs ####
 shinyServer(function(input, output) {
   
-#####Ui  dinamica#####  
+#### Ui dinamica ####
 
+  #Selecinput para Comparador con la lista de criptomonedas con Bitcoin i Etherium preseleccionadas y multiple en True
 output$lista<-renderUI({
  selectInput("coin", "Elige las Cryptomonedas", choice=lista, selected = c(209,720), multiple = TRUE)
   })  
 
+ #Selecinput para Sceener con la lista de criptomonedas con Bitcoin preseleccionado y multiple en false
 output$lista2<-renderUI({
   selectInput("coin2", "Elige las Cryptomonedas", choice=lista, selected =209, multiple = FALSE)
 })
 
+ #Tabla en summary para poder mostrar la estructura del conjunto de datos
 output$head<-renderTable({
   crypto[1:5,1:13]
  })
 
 
-#####Variables reactivas#####
+#### Variables reactivas ####
 
-   #función reactiva del input monedas
+ #función reactiva del input monedas del primer selectinput
     col<-reactive({ 
     as.numeric(input$coin) 
   })
 
-#función reactiva del input monedas
+ #función reactiva del input monedas del segundo selectinput
 col2<-reactive({ 
   as.numeric(input$coin2) 
 })
 
-    #Cambio de eje X
+ #función reactiva para poder hacer zoom vertical del gráfico comparador
     rango<-reactive({ 
       as.numeric(input$slider) 
   })
     
-    
+ #Dataframe resultante después de seleccionar las criptomonedas seleccionadas en Comparador
     monedasselec<-reactive({
          #monedas elegidas por el usuario
           colm<- choices[col(),1]
@@ -108,7 +154,7 @@ col2<-reactive({
           crypto[z,]      
       })  
     
-    
+ #Dataframe resultante después de seleccionar las criptomonedas seleccionadas en Screener     
     monedasselec2<-reactive({
       #monedas elegidas por el usuario
       colm2<- choices[col2(),1]
@@ -119,13 +165,14 @@ col2<-reactive({
       crypto[z2,]      
     })  
     
-#####renderTables#####    
+#### renderTables ####    
     
+    #Se muestra en comparador el dataframe de las monedas seleccionadas
     output$monedas<-renderTable({
           monedasselec()
      })
     
-#####renderPlot#####
+#### renderPlot ####
     
     #representación gráfica comparativa#
     output$Plot <- renderPlot({
@@ -150,12 +197,12 @@ col2<-reactive({
     #representación marketshare investigación#    
     output$marketshare1 <- renderPlot({
       
-      crypto10<-crypto[1:11644,]     
-      ggplot(data = crypto10, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
+      cryptotodas<-crypto[1:942297,]     
+      ggplot(data = cryptotodas, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
       geom_area( ) +
       scale_fill_viridis(discrete = TRUE) +
       theme(legend.position="none") +
-      ggtitle("Capitalización de todas las Criptomonedas") +
+      ggtitle("Capitalización de las cryptos") +
       theme_ipsum() +
       theme(legend.position="none")+xlab("Año") +ylab("Marketshare($)")
    })
@@ -163,13 +210,12 @@ col2<-reactive({
     
     #representación marketshare investigación2#    
     output$marketshare2 <- renderPlot({
-      
-      cryptoresto<-crypto[11644:942297,]     
-      ggplot(data = crypto, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
+      crypto10<-crypto[1:11644,]     
+      ggplot(data = crypto10, aes(x=date, y=market, fill=slug,  sepparate=slug)) +
         geom_area( ) +
         scale_fill_viridis(discrete = TRUE) +
         theme(legend.position="none") +
-        ggtitle("Capitalización de las cripto sin las 10 primeras") +
+        ggtitle("Capitalización 10 primeras") +
         theme_ipsum() +
         theme(legend.position="none")+xlab("Año") +ylab("Marketshare($)")
     })
@@ -203,51 +249,34 @@ col2<-reactive({
     
     
     
-    ####Analisis predictivo#####
+#### Analisis predictivo #####
     cryptoBTC<-crypto[(crypto$slug=="bitcoin"),]
+    cryptoETH<-crypto[(crypto$slug=="ethereum"),]
     
     output$Plot3 <- renderPlot({
-          modelfit <- auto.arima(cryptoBTC$close, lambda = "auto")
+      modelfit <- auto.arima(cryptoBTC$close, lambda = "auto")
       price_forecast <- forecast(modelfit, h=30)
       plot(price_forecast)
-       })
+    })
+    output$Plot4 <- renderPlot({
+      modelfit <- auto.arima(cryptoETH$close, lambda = "auto")
+      price_forecast <- forecast(modelfit, h=30)
+      plot(price_forecast)
+    })
     
+    
+    #### Gráfico de Velas #####    
     output$Plot2 <- renderPlotly({
       
-      #función reactiva del input
-      col<-reactive({ 
-        as.numeric(input$coin) 
-      })
-      
-      #monedas elegidas por el usuario
-      colm<- choices[col(),1]
-      colm<-as.character(colm)
-      
-      #lista con True en las filas con monedas elegidas por el usuario
-      z<- crypto$slug %in% colm 
-      
-      #dataset con las monedas seleecionadas por el usuario
-      monedasselec<-crypto[z,]
-      
-      crypto2<-crypto[1:11644,]
-      
-      monedasselec<-crypto[1:100,]
-      # Plot
-      # No dendrogram nor reordering for neither column or row
-      
-      # basic example of ohlc charts
-      #df <- data.frame(Date=index(AAPL),coredata(AAPL))
-      #df <- tail(df, 30)
-      
-      fig <- monedasselec %>% plot_ly(x = monedasselec$date, type="candlestick",
-                                   open = monedasselec$open, close = monedasselec$close,
-                                   high = monedasselec$high, low = monedasselec$low) 
+      fig <- cryptoETH %>% plot_ly(x = cryptoETH$date, type="candlestick",
+                                   open = cryptoETH$open, close = cryptoETH$close,
+                                   high = cryptoETH$high, low = cryptoETH$low) 
       
       
       # plot volume bar chart
       #fig2 <- cryptoBTC
       
-      fig2 <- monedasselec %>% plot_ly(x=monedasselec$date, y=monedasselec$volume, type='bar', name = "Volume", colors = c('#17BECF','#7F7F7F')) 
+      fig2 <- cryptoETH %>% plot_ly(x=cryptoETH$date, y=cryptoETH$volume, type='bar', name = "Volume", colors = c('#17BECF','#7F7F7F')) 
       fig2 <- fig2 %>% layout(yaxis = list(title = "Volume"))
       # create rangeselector buttons
       rs <- list(visible = TRUE, x = 0.5, y = -0.055,
@@ -292,7 +321,10 @@ col2<-reactive({
 
 })
 
-    
+ 
+ 
+ 
+#### Proyectos futuros ####
     #crypto2$close<-scale(crypto2$close)
     #ggplot(crypto3, aes(x = slug, y = ranknow, fill = close)) + geom_tile()+scale_fill_gradient(low = "white", high = "red")
     

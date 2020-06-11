@@ -1,4 +1,49 @@
-library(shiny)
+#### INSTALACIÓN DE PAQUETES ####
+
+if(!require("tidyverse")) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if(!require("shiny")) {
+  install.packages("shiny")
+  library("shiny")
+}
+if(!require("ggplot2")) {
+  install.packages("ggplot2")
+  library("ggplot2")
+}
+if(!require("tidyverse")) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if(!require("dygraphs")) {
+  install.packages("dygraphs")
+  library("dygraphs")
+}
+if(!require("xts")) {
+  install.packages("xts")
+  library("xts")
+}
+if(!require("viridis")) {
+  install.packages("viridis")
+  library("viridis")
+}
+if(!require("hrbrthemes")) {
+  install.packages("hrbrthemes")
+  library("hrbrthemes")
+}
+if(!require("plotly")) {
+  install.packages("plotly")
+  library("plotly")
+}
+if(!require("quantmod")) {
+  install.packages("quantmod")
+  library("quantmod")
+}
+if(!require("forecast")) {
+  install.packages("forecast")
+  library("forecast")
+}
 
 
 shinyUI(
@@ -31,9 +76,9 @@ shinyUI(
                   tabPanel("Grafico de Velas", plotlyOutput("Plot2")),
                   tabPanel("Investigación", 
                            h4("Analisis de datos"),
-                           h5("En este primer grafico se quiere remarcar la capitalización global de las 10 primeras monedas con mayor marketshare"),
+                           h5("En este primer grafico se quiere remarcar la capitalización global "),
                            plotOutput("marketshare1"),
-                           h5("Pudiendose comprar el marketshare con el total de las cryptomonedas analizadas, 2071 en total."),
+                           h5("Representacion de la capitalización de las 10 primeras Critomonedas"),
                            plotOutput("marketshare2"),
                            h5("El porcentage de marketshare de Bitcoin respecto al conjunto de las cryptomonedas"),
                            plotOutput("marketbtc"),
@@ -44,7 +89,9 @@ shinyUI(
                            h5("El porcentage de marketshare de todas las monedas menos las tres primeras"),
                            plotOutput("marketresto")
                                                       ),
-                  tabPanel("Predictivo", h5("Predicción precio Bitcoin"), plotlyOutput("Plot3")),
+                  tabPanel("Predictivo", h5("Predicción precio Bitcoin"), plotOutput("Plot3"),
+                           h5("Predicción precio Ethereum"),
+                           plotOutput("Plot4")),
                   tabPanel("Disclaimer", h5("Este software es simplemente educativo. Comprar cryptomonedas conlleva un riesgo de perdida absoluta de capital."))
                   )
             )
