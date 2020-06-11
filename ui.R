@@ -1,3 +1,10 @@
+#########################################
+#       Grupo 11                        #
+# Martinez Rodriguez, Adrian            #
+# Pardo Antunez, Alejandro              #
+#                                       #
+#########################################
+
 #### INSTALACIÓN DE PAQUETES ####
 
 if(!require("tidyverse")) {
